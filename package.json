@@ -1,0 +1,37 @@
+{
+  "name": "realty-parser",
+  "version": "0.1.0",
+  "description": "Parsers for major russian real estate sites",
+  "main": "dist/realty-parser.js",
+  "scripts": {
+    "test": "gulp test",
+    "prepublush": "gulp build"
+  },
+  "keywords": [
+    "realty",
+    "avito",
+    "cian"
+  ],
+  "author": "Daniil Pokrovsky",
+  "license": "ISC",
+  "devDependencies": {
+    "babel": "^5.8.23",
+    "babel-core": "^5.8.25",
+    "babel-eslint": "^4.1.3",
+    "chai": "^3.3.0",
+    "gulp": "^3.9.0",
+    "gulp-babel": "^5.3.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-mocha": "^2.1.3",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.4.2",
+    "gulp-util": "^3.0.6",
+    "gulp-watch": "^4.3.5",
+    "mocha": "^2.3.3",
+    "sinon": "^1.17.1"
+  },
+  "dependencies": {
+    "cheerio": "^0.19.0",
+    "request": "^2.65.0"
+  }
+}
