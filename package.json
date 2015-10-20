@@ -2,10 +2,10 @@
   "name": "realty-parser",
   "version": "0.1.0",
   "description": "Parsers for major russian real estate sites",
-  "main": "dist/realty-parser.js",
+  "main": "lib/realty-parser.js",
   "scripts": {
     "test": "gulp test",
-    "prepublush": "gulp build"
+    "prepublish": "gulp build"
   },
   "keywords": [
     "realty",
