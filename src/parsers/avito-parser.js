@@ -49,7 +49,7 @@ class AvitoParser extends Parser {
 
   _extractRoomCountFromHeader(header) {
     let roomCountMatches = header.match(/\d+(?=\-к)/);
-    if (roomCountMatches > -1) {
+    if (roomCountMatches.length > -1) {
       return roomCountMatches[0];
     }
     return null;
@@ -57,11 +57,30 @@ class AvitoParser extends Parser {
 
   _extractPropertySizeFromHeader(header) {
     let propertySizeMatches = header.match(/\d+(?=\s*м²)/);
-    if (propertySizeMatches > -1) {
+    if (propertySizeMatches.length > -1) {
       return propertySizeMatches[0];
     }
     return null;
   }
+
+  _extractFloorFromHeader(header) {
+    let floorMatches = header.match(/\d\/\d(?=\s*эт)/);
+    if (floorMatches.length > -1) {
+      let floors = floorMatches[0].split('/');
+      return parseInt(floors[0]);
+    }
+    return null;
+  }
+
+  _extractFloorsInBuildingFromHeader(header) {
+    let floorMatches = header.match(/\d\/\d(?=\s*эт)/);
+    if (floorMatches.length > -1) {
+      let floors = floorMatches[0].split('/');
+      return parseInt(floors[1]);
+    }
+    return null;
+  }
+
 
   _extractRentType(rentString) {
     // get rent type (monthly, daily)
@@ -112,7 +131,7 @@ class AvitoParser extends Parser {
 
 
   // TODO: should parse selling properties too, not only rental
-  // TODO: save information about floor if it's appartment
+  // TODO: detect if owner or agency posted ad
   _parsePage(body, url) {
     let result = new Property('avito', url);
     result.currency = 'rub';
@@ -124,6 +143,8 @@ class AvitoParser extends Parser {
     result.type = this._extractPropertyTypeFromHeader(header);
     result.roomCount = this._extractRoomCountFromHeader(header)
     result.propertySize = this._extractPropertySizeFromHeader(header);
+    result.floor = this._extractFloorFromHeader(header);
+    result.floorsInBuilding = this._extractFloorsInBuildingFromHeader(header);
     result.propertySizeUnits = 'sq.m';
 
     // get city

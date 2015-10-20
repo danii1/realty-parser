@@ -179,5 +179,16 @@ describe('AvitoParser', function () {
       });
   });
 
+  it('should extract apparment floor and number of floors in building', (done) => {
+    parser.parse(url)
+      .then((result) => {
+        expect(result.floor, 'floor').to.be.above(0);
+        expect(result.floorsInBuilding, 'floorsInBuilding').to.be.above(0);
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      });
+  });
 
 });

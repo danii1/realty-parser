@@ -11,6 +11,9 @@ class Property {
   propertySize = null;
   propertySizeUnits = null; // sq.m/sq.ft
 
+  floor = null;
+  floorsInBuilding = null;
+
   // pricing
   rent = null;
   rentType = null; // daily/monthly
