@@ -81,7 +81,7 @@ class AvitoParser extends Parser {
   _extractRentType(rentString) {
     // get rent type (monthly, daily)
     const monthly = 'месяц';
-    const daily = 'день';
+    const daily = 'сутки';
     if (rentString.indexOf(monthly) > -1) {
       return 'monthly';
     } else if (rentString.indexOf(daily) > -1) {
@@ -125,9 +125,7 @@ class AvitoParser extends Parser {
     return null;
   }
 
-
   // TODO: should parse selling properties too, not only rental
-  // TODO: detect if owner or agency posted ad
   _parsePage(body, url) {
     const result = new Property('avito', url);
     result.currency = 'rub';
@@ -143,22 +141,41 @@ class AvitoParser extends Parser {
     result.floorsInBuilding = this._extractFloorsInBuildingFromHeader(header);
     result.propertySizeUnits = 'sq.m';
 
+    // extract photos
+    $('.js-item-gallery .gallery-link').each((index, elem) => {
+      let link = $(elem).attr('href');
+      link = link.replace(/^\/\//, 'http://');
+      result.photos.push(link);
+    });
+
+    // extract author type
+    const authorType = $('.description_seller').text();
+    if (authorType.indexOf('Агентство') > -1) {
+      result.author.type = 'agency';
+    } else if (authorType.indexOf('Арендодатель') > -1) {
+      result.author.type = 'owner';
+    }
+
+    // extract author name
+    const authorName = $('#seller').children().first().text();
+    result.author.name = authorName;
+
     // get city
     $('span', '.description_content').each((index, elem) => {
       if ($(elem).attr('itemprop') === 'name') {
-        result.city = $(elem).text();
+        result.city = $(elem).text().trim();
       }
     });
 
     // get address
     $('.description_content').each((index, elem) => {
       if ($(elem).attr('itemprop') === 'address') {
-        result.address = $(elem).text();
+        result.address = $(elem).text().trim();
       }
     });
 
     // get description
-    result.description = $('#desc_text').text();
+    result.description = $('#desc_text').text().trim();
 
     // get rent and rent type
     const rentString = $('.p_i_price').text().toLowerCase();

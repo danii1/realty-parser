@@ -7,11 +7,20 @@ var mocha = require('gulp-mocha');
 var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var eslint = require('gulp-eslint');
+var cache  = require('gulp-memory-cache');
 require('babel/register')({ stage: 0 });
 
 gulp.task('lint', function () {
     return gulp.src(['src/**/*.js','test/**/*.js'])
         .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
+
+gulp.task('lint-tdd', function () {
+    return gulp.src(['src/**/*.js','test/**/*.js'], {since: cache.lastMtime('js')})
+        .pipe(eslint())
+        .pipe(cache('js'))
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
 });
@@ -23,7 +32,8 @@ gulp.task('test', function (done) {
 });
 
 gulp.task('tdd', ['test'], function () {
-  gulp.watch(['./src/**', './test/**'], ['lint','test']);
+  gulp.watch(['./src/**', './test/**'], ['lint-tdd','test'])
+    .on('change', cache.update('js'));;
 });
 
 gulp.task('build', function () {

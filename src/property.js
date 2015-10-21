@@ -4,6 +4,12 @@ class Property {
     this.url = url;
   }
 
+  // ad author
+  author = {
+    type: null,
+    name: null,
+  };
+
   // property type: room/appartment/house, etc
   type = null;
 
@@ -29,6 +35,9 @@ class Property {
 
   // property description
   description = null;
+
+  // property photos
+  photos = [];
 
   // wifi, washing machine, etc
   householdAppliances = [];

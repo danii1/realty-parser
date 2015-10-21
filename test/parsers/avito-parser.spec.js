@@ -179,11 +179,35 @@ describe('AvitoParser', function() {
       });
   });
 
+  it('should extract photos', (done) => {
+    parser.parse(url)
+      .then((result) => {
+        expect(result.photos.length).to.be.equal(3);
+        expect(result.photos[0]).match(/http.*?:\/\/.*\.(jpg|jpeg|png)/);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
   it('should extract apparment floor and number of floors in building', (done) => {
     parser.parse(url)
       .then((result) => {
         expect(result.floor, 'floor').to.be.above(0);
         expect(result.floorsInBuilding, 'floorsInBuilding').to.be.above(0);
+        done();
+      })
+      .catch((err) => {
+        done(err);
+      });
+  });
+
+  it('should extract author', (done) => {
+    parser.parse(url)
+      .then((result) => {
+        expect(result.author.type, 'author type').to.be.ok;
+        expect(result.author.name, 'author name').to.be.ok;
         done();
       })
       .catch((err) => {
