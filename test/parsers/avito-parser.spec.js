@@ -1,13 +1,13 @@
 import AvitoParser from '../../src/parsers/avito-parser.js';
-import {assert, expect, should} from 'chai';
+import {expect} from 'chai';
 import sinon from 'sinon';
 import request from 'request';
 import fs from 'fs';
 
-describe('AvitoParser', function () {
+describe('AvitoParser', function() {
   let parser;
-  let url = 'https://www.avito.ru/moskva/kvartiry/2-k_kvartira_42_m_69_et._662693419';
-  let avitoFileContents = fs.readFileSync('test/data/avito/2k.html', { encoding: 'utf-8' });
+  const url = 'https://www.avito.ru/moskva/kvartiry/2-k_kvartira_42_m_69_et._662693419';
+  const avitoFileContents = fs.readFileSync('test/data/avito/2k.html', { encoding: 'utf-8' });
 
   beforeEach(() => {
     parser = new AvitoParser();
@@ -23,7 +23,7 @@ describe('AvitoParser', function () {
 
   it('should throw exception on empty url', () => {
     expect(function() {
-      parser.parse('')
+      parser.parse('');
     }).to.throw(Error);
   });
 
@@ -32,10 +32,10 @@ describe('AvitoParser', function () {
       .then((result) => {
         expect(result).to.not.be.undefined;
         expect(result.source).to.be.equal('avito');
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -43,10 +43,10 @@ describe('AvitoParser', function () {
     parser.parse(url)
       .then((result) => {
         expect(result.source).to.be.equal('avito');
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -54,10 +54,10 @@ describe('AvitoParser', function () {
     parser.parse(url)
       .then((result) => {
         expect(result.url).to.be.equal(url);
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -65,10 +65,10 @@ describe('AvitoParser', function () {
     parser.parse(url)
       .then((result) => {
         expect(result.currency).to.be.equal('rub');
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -77,10 +77,10 @@ describe('AvitoParser', function () {
       .then((result) => {
         expect(result.description).to.be.ok;
         expect(result.description.length).to.be.above(0);
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -89,10 +89,10 @@ describe('AvitoParser', function () {
       .then((result) => {
         expect(result.lat).to.be.ok;
         expect(result.lng).to.be.ok;
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -101,10 +101,10 @@ describe('AvitoParser', function () {
       .then((result) => {
         expect(result.city).to.be.ok;
         expect(result.address).to.be.ok;
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -115,10 +115,10 @@ describe('AvitoParser', function () {
         expect(result.rentType).to.be.equal('monthly');
         expect(result.commission).to.be.equal(33500);
         expect(result.deposit).to.be.equal(67000);
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -126,10 +126,10 @@ describe('AvitoParser', function () {
     parser.parse(url)
       .then((result) => {
         expect(result.type).to.be.ok;
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -139,10 +139,10 @@ describe('AvitoParser', function () {
         expect(result.roomCount, 'room count').to.be.above(0);
         expect(result.propertySize, 'property size').to.be.above(0);
         expect(result.propertySizeUnits, 'property size units').to.be.equal('sq.m');
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -150,10 +150,10 @@ describe('AvitoParser', function () {
     parser.parse(url)
       .then((result) => {
         expect(result.comforts.length).to.be.above(0);
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -161,10 +161,10 @@ describe('AvitoParser', function () {
     parser.parse(url)
       .then((result) => {
         expect(result.householdAppliances.length).to.be.above(0);
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -172,10 +172,10 @@ describe('AvitoParser', function () {
     parser.parse(url)
       .then((result) => {
         expect(result.permissions.length).to.be.equal(2);
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
 
@@ -184,11 +184,10 @@ describe('AvitoParser', function () {
       .then((result) => {
         expect(result.floor, 'floor').to.be.above(0);
         expect(result.floorsInBuilding, 'floorsInBuilding').to.be.above(0);
-        done()
+        done();
       })
       .catch((err) => {
-        done(err)
+        done(err);
       });
   });
-
 });

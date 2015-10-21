@@ -1,16 +1,16 @@
 import Parser from '../../src/parsers/parser.js';
-import {assert, expect, should} from 'chai';
+import {expect} from 'chai';
 
-describe('Parser', function () {
+describe('Parser', function() {
   let parser;
 
-  beforeEach(()=>{
+  beforeEach(() => {
     parser = new Parser();
   });
 
   it('should throw exception', () => {
-    expect(function(){
-      parser.parse('')
+    expect(function() {
+      parser.parse('');
     }).to.throw(Error, 'Not implemented');
   });
 });

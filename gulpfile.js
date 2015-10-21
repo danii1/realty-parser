@@ -6,16 +6,24 @@ var gutil = require('gulp-util');
 var mocha = require('gulp-mocha');
 var babel = require('gulp-babel');
 var concat = require('gulp-concat');
+var eslint = require('gulp-eslint');
 require('babel/register')({ stage: 0 });
 
+gulp.task('lint', function () {
+    return gulp.src(['src/**/*.js','test/**/*.js'])
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.failAfterError());
+});
+
 gulp.task('test', function (done) {
-  return gulp.src(['test/**/*.js', 'test/*.js'], { read: false })
+  return gulp.src(['test/**/*.js'], { read: false })
     .pipe(mocha({reporter: 'spec'}))
     .on('error', gutil.log);
 });
 
 gulp.task('tdd', ['test'], function () {
-  gulp.watch(['./src/**', './test/**'], ['test']);
+  gulp.watch(['./src/**', './test/**'], ['lint','test']);
 });
 
 gulp.task('build', function () {

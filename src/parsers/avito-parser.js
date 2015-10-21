@@ -8,7 +8,7 @@ class AvitoParser extends Parser {
     'Можно с питомцами': 'pets_allowed',
     'Можно с детьми': 'family_with_children_allowed',
     'Можно курить': 'smoking_allowed',
-    'Можно для мероприятий': 'use_as_event_space_allowed'
+    'Можно для мероприятий': 'use_as_event_space_allowed',
   }
 
   static comfortsMapping = {
@@ -27,7 +27,7 @@ class AvitoParser extends Parser {
     'Холодильник': 'fridge',
     'Стиральная машина': 'washing_machine',
     'Фен': 'hairdryer',
-    'Утюг': 'iron'
+    'Утюг': 'iron',
   }
 
   _extractPropertyTypeFromHeader(header) {
@@ -48,35 +48,31 @@ class AvitoParser extends Parser {
   }
 
   _extractRoomCountFromHeader(header) {
-    let roomCountMatches = header.match(/\d+(?=\-к)/);
-    if (roomCountMatches.length > -1) {
-      return roomCountMatches[0];
-    }
+    const roomCountMatches = header.match(/\d+(?=\-к)/);
+    if (roomCountMatches.length > -1) return roomCountMatches[0];
     return null;
   }
 
   _extractPropertySizeFromHeader(header) {
-    let propertySizeMatches = header.match(/\d+(?=\s*м²)/);
-    if (propertySizeMatches.length > -1) {
-      return propertySizeMatches[0];
-    }
+    const propertySizeMatches = header.match(/\d+(?=\s*м²)/);
+    if (propertySizeMatches.length > -1) return propertySizeMatches[0];
     return null;
   }
 
   _extractFloorFromHeader(header) {
-    let floorMatches = header.match(/\d\/\d(?=\s*эт)/);
+    const floorMatches = header.match(/\d\/\d(?=\s*эт)/);
     if (floorMatches.length > -1) {
-      let floors = floorMatches[0].split('/');
-      return parseInt(floors[0]);
+      const floors = floorMatches[0].split('/');
+      return parseInt(floors[0], 10);
     }
     return null;
   }
 
   _extractFloorsInBuildingFromHeader(header) {
-    let floorMatches = header.match(/\d\/\d(?=\s*эт)/);
+    const floorMatches = header.match(/\d\/\d(?=\s*эт)/);
     if (floorMatches.length > -1) {
-      let floors = floorMatches[0].split('/');
-      return parseInt(floors[1]);
+      const floors = floorMatches[0].split('/');
+      return parseInt(floors[1], 10);
     }
     return null;
   }
@@ -95,9 +91,9 @@ class AvitoParser extends Parser {
   }
 
   _extractRent(rentString) {
-    let rentMatches = rentString.match(/(\d+\s*)+/);
+    const rentMatches = rentString.match(/(\d+\s*)+/);
     if (rentMatches.length > 0) {
-      let normalizedRentString = rentMatches[0].replace(/[\s]/g, '');
+      const normalizedRentString = rentMatches[0].replace(/[\s]/g, '');
       return parseFloat(normalizedRentString);
     }
     return null;
@@ -106,10 +102,10 @@ class AvitoParser extends Parser {
   _exractCommission(commissionString) {
     const commission = 'комиссия';
     if (commissionString.indexOf(commission) > -1) {
-      let regex = /(?:комиссия\s+)((\d+\s*)+)/g;
-      let commissionMatches = regex.exec(commissionString);
+      const regex = /(?:комиссия\s+)((\d+\s*)+)/g;
+      const commissionMatches = regex.exec(commissionString);
       if (commissionMatches.length > 1) {
-        let normalizedCommissionString = commissionMatches[1].replace(/[\s]/g, '');
+        const normalizedCommissionString = commissionMatches[1].replace(/[\s]/g, '');
         return parseFloat(normalizedCommissionString);
       }
     }
@@ -119,10 +115,10 @@ class AvitoParser extends Parser {
   _extractDeposit(commissionString) {
     const deposit = 'залог';
     if (commissionString.indexOf(deposit) > -1) {
-      let regex = /(?:залог\s+)((\d+\s*)+)/g;
-      let depositMatches = regex.exec(commissionString);
+      const regex = /(?:залог\s+)((\d+\s*)+)/g;
+      const depositMatches = regex.exec(commissionString);
       if (depositMatches.length > 1) {
-        let normalizedDepositString = depositMatches[1].replace(/[\s]/g, '');
+        const normalizedDepositString = depositMatches[1].replace(/[\s]/g, '');
         return parseFloat(normalizedDepositString);
       }
     }
@@ -133,15 +129,15 @@ class AvitoParser extends Parser {
   // TODO: should parse selling properties too, not only rental
   // TODO: detect if owner or agency posted ad
   _parsePage(body, url) {
-    let result = new Property('avito', url);
+    const result = new Property('avito', url);
     result.currency = 'rub';
 
-    let $ = cheerio.load(body);
+    const $ = cheerio.load(body);
 
     const header = $('.h1').text().toLowerCase();
 
     result.type = this._extractPropertyTypeFromHeader(header);
-    result.roomCount = this._extractRoomCountFromHeader(header)
+    result.roomCount = this._extractRoomCountFromHeader(header);
     result.propertySize = this._extractPropertySizeFromHeader(header);
     result.floor = this._extractFloorFromHeader(header);
     result.floorsInBuilding = this._extractFloorsInBuildingFromHeader(header);
@@ -149,14 +145,14 @@ class AvitoParser extends Parser {
 
     // get city
     $('span', '.description_content').each((index, elem) => {
-      if ($(elem).attr('itemprop') == 'name') {
+      if ($(elem).attr('itemprop') === 'name') {
         result.city = $(elem).text();
       }
     });
 
     // get address
     $('.description_content').each((index, elem) => {
-      if ($(elem).attr('itemprop') == 'address') {
+      if ($(elem).attr('itemprop') === 'address') {
         result.address = $(elem).text();
       }
     });
@@ -179,12 +175,12 @@ class AvitoParser extends Parser {
     result.lng = $('.js-item-map').attr('data-map-lon');
 
     $('.item-param-g-value').each((index, elem) => {
-      let items = $(elem).text().split(',');
-      for (var i = 0; i < items.length; i++) {
+      const items = $(elem).text().split(',');
+      for (let i = 0; i < items.length; i++) {
         items[i] = items[i].trim();
       }
 
-      for (var i = 0; i < items.length; i++) {
+      for (let i = 0; i < items.length; i++) {
         const prop = items[i];
         if (AvitoParser.permissionsMapping[prop]) {
           result.permissions.push(AvitoParser.permissionsMapping[prop]);
@@ -208,7 +204,7 @@ class AvitoParser extends Parser {
       throw new Error('url param should be valid');
     }
 
-    let _this = this;
+    const _this = this;
     return new Promise((resolve, reject) => {
       request.get(url, function(err, response, body) {
         if (err) {

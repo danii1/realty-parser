@@ -1,5 +1,5 @@
 class Parser {
-  parse(url) {
+  parse() {
     throw new Error('Not implemented');
   }
 }

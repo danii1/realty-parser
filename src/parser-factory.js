@@ -1,5 +1,3 @@
-import AvitoParser from './parsers/avito-parser.js';
-
 class ParserFactory {
   static create(type) {
     switch (type) {
