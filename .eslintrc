@@ -15,7 +15,7 @@
     "strict": 2,
     "no-extra-semi": 2,
     "no-underscore-dangle": 0,
-    "no-console": 2,
+    "no-console": 0,
     "no-trailing-spaces": 0,
     "func-names": 0,
     "no-unused-expressions": 0,

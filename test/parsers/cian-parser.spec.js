@@ -1,23 +1,22 @@
-import AvitoParser from '../../src/parsers/avito-parser.js';
+import CianParser from '../../src/parsers/cian-parser.js';
 import {expect} from 'chai';
 import sinon from 'sinon';
 import request from 'request';
 import fs from 'fs';
 
-describe('AvitoParser', function() {
+describe('CianParser', function() {
   let parser;
-  const url = 'https://www.avito.ru/moskva/kvartiry/2-k_kvartira_42_m_69_et._662693419';
-  const avitoFileContents = fs.readFileSync('test/data/avito/2k.html', { encoding: 'utf-8' });
+  const url = 'http://www.cian.ru/rent/flat/29827936/';
+  const cianFileContents = fs.readFileSync('test/data/cian/2k.html', { encoding: 'utf-8' });
 
   beforeEach(() => {
-    parser = new AvitoParser();
+    parser = new CianParser();
     sinon.stub(request, 'get').yields(
-      null, null, avitoFileContents
+      null, null, cianFileContents
     );
   });
 
   afterEach(() => {
-    parser = new AvitoParser();
     request.get.restore();
   });
 
@@ -27,7 +26,7 @@ describe('AvitoParser', function() {
     }).to.throw(Error);
   });
 
-  it('should parse avito page', (done) => {
+  it('should parse cian page', (done) => {
     parser.parse(url)
       .then((result) => {
         expect(result).to.not.be.undefined;
@@ -41,7 +40,7 @@ describe('AvitoParser', function() {
   it('should return result with correct base values', (done) => {
     parser.parse(url)
       .then((result) => {
-        expect(result.source).to.be.equal('avito');
+        expect(result.source).to.be.equal('cian');
         expect(result.url).to.be.equal(url);
         expect(result.currency).to.be.equal('rub');
         done();
@@ -50,6 +49,7 @@ describe('AvitoParser', function() {
         done(err);
       });
   });
+
 
   it('should extract description', (done) => {
     parser.parse(url)
@@ -90,10 +90,10 @@ describe('AvitoParser', function() {
   it('should extract pricing info', (done) => {
     parser.parse(url)
       .then((result) => {
-        expect(result.rent).to.be.equal(67000);
+        expect(result.rent).to.be.equal(50000);
         expect(result.rentType).to.be.equal('monthly');
-        expect(result.commission).to.be.equal(33500);
-        expect(result.deposit).to.be.equal(67000);
+        expect(result.commission).to.be.equal(25000);
+        expect(result.deposit).to.be.equal(50000);
         done();
       })
       .catch((err) => {
@@ -161,7 +161,7 @@ describe('AvitoParser', function() {
   it('should extract photos', (done) => {
     parser.parse(url)
       .then((result) => {
-        expect(result.photos.length).to.be.equal(3);
+        expect(result.photos.length).to.be.equal(24);
         expect(result.photos[0]).match(/http.*?:\/\/.*\.(jpg|jpeg|png)/);
         done();
       })

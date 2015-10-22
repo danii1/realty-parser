@@ -21,8 +21,7 @@ gulp.task('lint-tdd', function () {
     return gulp.src(['src/**/*.js','test/**/*.js'], {since: cache.lastMtime('js')})
         .pipe(eslint())
         .pipe(cache('js'))
-        .pipe(eslint.format())
-        .pipe(eslint.failAfterError());
+        .pipe(eslint.format());
 });
 
 gulp.task('test', function (done) {
@@ -31,7 +30,7 @@ gulp.task('test', function (done) {
     .on('error', gutil.log);
 });
 
-gulp.task('tdd', ['test'], function () {
+gulp.task('tdd', function () {
   gulp.watch(['./src/**', './test/**'], ['lint-tdd','test'])
     .on('change', cache.update('js'));;
 });
