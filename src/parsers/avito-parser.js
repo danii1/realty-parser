@@ -24,7 +24,7 @@ class AvitoParser extends Parser {
   _extractRoomCountFromHeader(header) {
     const roomCountMatches = header.match(/\d+(?=\-к)/);
     if (roomCountMatches && roomCountMatches.length > -1) {
-      return roomCountMatches[0];
+      return parseInt(roomCountMatches[0], 10);
     }
     return null;
   }
@@ -32,7 +32,7 @@ class AvitoParser extends Parser {
   _extractPropertySizeFromHeader(header) {
     const propertySizeMatches = header.match(/\d+(?=\s*м²)/);
     if (propertySizeMatches && propertySizeMatches.length > -1) {
-      return propertySizeMatches[0];
+      return parseFloat(propertySizeMatches[0]);
     }
     return null;
   }
@@ -224,7 +224,7 @@ AvitoParser.comfortsMapping = {
 };
 
 AvitoParser.householdAppliancesMapping = {
-  'Wi-Fi': 'wifi',
+  'Wi-Fi': 'internet',
   'Телевизор': 'tv',
   'Кабельное / цифровое ТВ': 'cable_tv',
   'Плита': 'stove',

@@ -4,10 +4,36 @@ import request from 'request';
 import cheerio from 'cheerio';
 
 class CianParser extends Parser {
+  _extractPropertyTypeFromHeader(header) {
+    const room = 'комната';
+    const appartment = '-комн.';
+    const studio = 'студия';
+    const house = 'дом';
+    if (header.indexOf(room) > -1) {
+      return 'room';
+    } else if (header.indexOf(appartment)) {
+      return 'appartment';
+    } else if (header.indexof(studio)) {
+      return 'studio';
+    } else if (header.indexOf(house)) {
+      return 'house';
+    }
+    return null;
+  }
+
+  _extractRoomCountFromHeader(header) {
+    const roomCountMatches = header.match(/\d+(?=\-комн)/);
+    if (roomCountMatches && roomCountMatches.length > -1) {
+      return parseInt(roomCountMatches[0], 10);
+    }
+    return null;
+  }
+
+
   _extractCoordinates(mapOptionsString) {
     const coordinatesRegex = /\[(.*)\]/;
     const matches = coordinatesRegex.exec(mapOptionsString);
-    if (matches.length > 1) {
+    if (matches && matches.length > 1) {
       return matches[1].split(',');
     }
     return [null, null];
@@ -27,7 +53,7 @@ class CianParser extends Parser {
 
   _extractRent(rentString) {
     const rentMatches = rentString.match(/(\d+\s*)+/);
-    if (rentMatches.length > 0) {
+    if (rentMatches && rentMatches.length > 0) {
       const normalizedRentString = rentMatches[0].replace(/[\s]/g, '');
       return parseFloat(normalizedRentString);
     }
@@ -44,7 +70,7 @@ class CianParser extends Parser {
     if (commissionString.indexOf(commission) > -1) {
       const regex = /(?:комиссия\s+)((\d+\s*)+)/g;
       const commissionMatches = regex.exec(commissionString);
-      if (commissionMatches.length > 1) {
+      if (commissionMatches && commissionMatches.length > 1) {
         const normalizedCommissionString = commissionMatches[1].replace(/[\s]/g, '');
         return (parseFloat(normalizedCommissionString) / 100 * rent);
       }
@@ -57,6 +83,12 @@ class CianParser extends Parser {
     result.currency = 'rub';
 
     const $ = cheerio.load(body);
+
+    const header = $('.object_descr_title').text().trim();
+    result.type = this._extractPropertyTypeFromHeader(header);
+    if (result.type === 'appartment') {
+      result.roomCount = this._extractRoomCountFromHeader(header);
+    }
 
     // get city and address
     const addrParts = $('.object_descr_addr').text().split(',').map((item) => {
@@ -79,8 +111,15 @@ class CianParser extends Parser {
         const values = value.split('/').map((item) => {
           return parseInt(item.trim(), 10);
         });
-        result.floor = values[0];
-        result.floorsInBuilding = values[1];
+        if (values.length === 2) {
+          result.floor = values[0];
+          result.floorsInBuilding = values[1];
+        }
+      }
+
+      if (title.indexOf('общая площадь') > -1) {
+        result.propertySize = parseFloat(value);
+        result.propertySizeUnits = 'sq.m';
       }
     });
 
@@ -102,13 +141,16 @@ class CianParser extends Parser {
       result.commission = this._extractCommission(commissionString, result.rent);
     }
 
-    // get parmissions, household appliances, comforts
-    const amenities = $('.object_descr_details li').map((index, elem) => {
-      return $(elem).text().trim();
-    }).get();
+    result.author.type = result.commission ? 'agency' : 'owner';
+    result.author.name = $('.object_descr_realtor_name').text().trim();
 
     result.photos = $('.fotorama img').map((index, elem) => {
       return $(elem).attr('src');
+    }).get();
+
+    // get permissions, household appliances, comforts
+    const amenities = $('.object_descr_details li').map((index, elem) => {
+      return $(elem).text().trim();
     }).get();
 
     amenities.forEach((prop) => {
@@ -146,27 +188,25 @@ class CianParser extends Parser {
   }
 }
 
-// TODO: check possible permissions on cian
 CianParser.permissionsMapping = {
   'можно с животными': 'pets_allowed',
   'можно с детьми': 'family_with_children_allowed',
-  'можно курить': 'smoking_allowed',
 };
 
-// TODO: check possible comforts on cian
 CianParser.comfortsMapping = {
   'балкон': 'balcony',
   'кондиционер': 'conditioner',
   'парковочное место': 'parking_space',
-  'камин': 'fireplace',
 };
 
 // TODO: check possible appliances on cian
 CianParser.householdAppliancesMapping = {
-  'Wi-Fi': 'wifi',
-  'кухонная мебель': 'kitchen_furniture',
-  'жилая мебель': 'furniture',
+  'интернет': 'internet',
+  'мебель на кухне': 'kitchen_furniture',
+  'мебель в комнатах': 'furniture',
   'ТВ': 'tv',
+  'посудомоечная машина': 'dishwasher',
+  'телефон': 'phone',
   'плита': 'stove',
   'микроволновка': 'microwave',
   'холодильник': 'fridge',

@@ -5,7 +5,7 @@ class Property {
 
     // ad author
     this.author = {
-      type: null,
+      type: null, // agency/owner
       name: null,
     };
 
@@ -45,7 +45,7 @@ class Property {
     this.comforts = [];
 
     // pets allowed, etc
-    this.permissions = [];    
+    this.permissions = [];
   }
 }
 
