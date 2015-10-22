@@ -1,4 +1,4 @@
-import CianParser from '../../src/parsers/cian-parser.js';
+import CianParser from '../../src/parsers/cian-parser';
 import {expect} from 'chai';
 import sinon from 'sinon';
 import request from 'request';

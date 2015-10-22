@@ -1,4 +1,4 @@
-import AvitoParser from '../../src/parsers/avito-parser.js';
+import AvitoParser from '../../src/parsers/avito-parser';
 import {expect} from 'chai';
 import sinon from 'sinon';
 import request from 'request';

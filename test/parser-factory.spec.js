@@ -1,6 +1,6 @@
-import ParserFactory from '../src/parser-factory.js';
-import AvitoParser from '../src/parsers/avito-parser.js';
-import CianParser from '../src/parsers/cian-parser.js';
+import ParserFactory from '../src/parser-factory';
+import AvitoParser from '../src/parsers/avito-parser';
+import CianParser from '../src/parsers/cian-parser';
 import {expect} from 'chai';
 
 describe('ParserFactory', function() {

@@ -1,5 +1,5 @@
-import AvitoParser from './parsers/avito-parser.js';
-import CianParser from './parsers/cian-parser.js';
+import AvitoParser from './parsers/avito-parser';
+import CianParser from './parsers/cian-parser';
 
 class ParserFactory {
   static create(type) {

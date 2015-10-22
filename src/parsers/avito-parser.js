@@ -1,34 +1,10 @@
-import Parser from './parser.js';
+import Parser from './parser';
 import Property from '../property';
 import request from 'request';
 import cheerio from 'cheerio';
 
 class AvitoParser extends Parser {
-  static permissionsMapping = {
-    'Можно с питомцами': 'pets_allowed',
-    'Можно с детьми': 'family_with_children_allowed',
-    'Можно курить': 'smoking_allowed',
-    'Можно для мероприятий': 'use_as_event_space_allowed',
-  }
 
-  static comfortsMapping = {
-    'Балкон / лоджия': 'balcony',
-    'Кондиционер': 'conditioner',
-    'Парковочное место': 'parking_space',
-    'Камин': 'fireplace',
-  }
-
-  static householdAppliancesMapping = {
-    'Wi-Fi': 'wifi',
-    'Телевизор': 'tv',
-    'Кабельное / цифровое ТВ': 'cable_tv',
-    'Плита': 'stove',
-    'Микроволновка': 'microwave',
-    'Холодильник': 'fridge',
-    'Стиральная машина': 'washing_machine',
-    'Фен': 'hairdryer',
-    'Утюг': 'iron',
-  }
 
   _extractPropertyTypeFromHeader(header) {
     const room = 'комната';
@@ -232,6 +208,32 @@ class AvitoParser extends Parser {
       });
     });
   }
+}
+
+AvitoParser.permissionsMapping = {
+  'Можно с питомцами': 'pets_allowed',
+  'Можно с детьми': 'family_with_children_allowed',
+  'Можно курить': 'smoking_allowed',
+  'Можно для мероприятий': 'use_as_event_space_allowed',
+}
+
+AvitoParser.comfortsMapping = {
+  'Балкон / лоджия': 'balcony',
+  'Кондиционер': 'conditioner',
+  'Парковочное место': 'parking_space',
+  'Камин': 'fireplace',
+}
+
+AvitoParser.householdAppliancesMapping = {
+  'Wi-Fi': 'wifi',
+  'Телевизор': 'tv',
+  'Кабельное / цифровое ТВ': 'cable_tv',
+  'Плита': 'stove',
+  'Микроволновка': 'microwave',
+  'Холодильник': 'fridge',
+  'Стиральная машина': 'washing_machine',
+  'Фен': 'hairdryer',
+  'Утюг': 'iron',
 }
 
 export default AvitoParser;

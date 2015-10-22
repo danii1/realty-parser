@@ -1,38 +1,9 @@
-import Parser from './parser.js';
+import Parser from './parser';
 import Property from '../property';
 import request from 'request';
 import cheerio from 'cheerio';
 
 class CianParser extends Parser {
-  // TODO: check possible permissions on cian
-  static permissionsMapping = {
-    'можно с животными': 'pets_allowed',
-    'можно с детьми': 'family_with_children_allowed',
-    'можно курить': 'smoking_allowed',
-  }
-
-  // TODO: check possible comforts on cian
-  static comfortsMapping = {
-    'балкон': 'balcony',
-    'кондиционер': 'conditioner',
-    'парковочное место': 'parking_space',
-    'камин': 'fireplace',
-  }
-
-  // TODO: check possible appliances on cian
-  static householdAppliancesMapping = {
-    'Wi-Fi': 'wifi',
-    'кухонная мебель': 'kitchen_furniture',
-    'жилая мебель': 'furniture',
-    'ТВ': 'tv',
-    'плита': 'stove',
-    'микроволновка': 'microwave',
-    'холодильник': 'fridge',
-    'стиральная машина': 'washing_machine',
-    'фен': 'hairdryer',
-    'утюг': 'iron',
-  }
-
   _extractCoordinates(mapOptionsString) {
     const coordinatesRegex = /\[(.*)\]/;
     const matches = coordinatesRegex.exec(mapOptionsString);
@@ -112,7 +83,7 @@ class CianParser extends Parser {
         result.floorsInBuilding = values[1];
       }
 
-      
+
     });
 
     // get description
@@ -176,5 +147,35 @@ class CianParser extends Parser {
     });
   }
 }
+
+// TODO: check possible permissions on cian
+CianParser.permissionsMapping = {
+  'можно с животными': 'pets_allowed',
+  'можно с детьми': 'family_with_children_allowed',
+  'можно курить': 'smoking_allowed',
+}
+
+// TODO: check possible comforts on cian
+CianParser.comfortsMapping = {
+  'балкон': 'balcony',
+  'кондиционер': 'conditioner',
+  'парковочное место': 'parking_space',
+  'камин': 'fireplace',
+}
+
+// TODO: check possible appliances on cian
+CianParser.householdAppliancesMapping = {
+  'Wi-Fi': 'wifi',
+  'кухонная мебель': 'kitchen_furniture',
+  'жилая мебель': 'furniture',
+  'ТВ': 'tv',
+  'плита': 'stove',
+  'микроволновка': 'microwave',
+  'холодильник': 'fridge',
+  'стиральная машина': 'washing_machine',
+  'фен': 'hairdryer',
+  'утюг': 'iron',
+}
+
 
 export default CianParser;
