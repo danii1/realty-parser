@@ -4,8 +4,6 @@ import request from 'request';
 import cheerio from 'cheerio';
 
 class AvitoParser extends Parser {
-
-
   _extractPropertyTypeFromHeader(header) {
     const room = 'комната';
     const appartment = 'квартира';
@@ -25,19 +23,23 @@ class AvitoParser extends Parser {
 
   _extractRoomCountFromHeader(header) {
     const roomCountMatches = header.match(/\d+(?=\-к)/);
-    if (roomCountMatches.length > -1) return roomCountMatches[0];
+    if (roomCountMatches && roomCountMatches.length > -1) {
+      return roomCountMatches[0];
+    }
     return null;
   }
 
   _extractPropertySizeFromHeader(header) {
     const propertySizeMatches = header.match(/\d+(?=\s*м²)/);
-    if (propertySizeMatches.length > -1) return propertySizeMatches[0];
+    if (propertySizeMatches && propertySizeMatches.length > -1) {
+      return propertySizeMatches[0];
+    }
     return null;
   }
 
   _extractFloorFromHeader(header) {
     const floorMatches = header.match(/\d\/\d(?=\s*эт)/);
-    if (floorMatches.length > -1) {
+    if (floorMatches && floorMatches.length > -1) {
       const floors = floorMatches[0].split('/');
       return parseInt(floors[0], 10);
     }
@@ -46,7 +48,7 @@ class AvitoParser extends Parser {
 
   _extractFloorsInBuildingFromHeader(header) {
     const floorMatches = header.match(/\d\/\d(?=\s*эт)/);
-    if (floorMatches.length > -1) {
+    if (floorMatches && floorMatches.length > -1) {
       const floors = floorMatches[0].split('/');
       return parseInt(floors[1], 10);
     }
@@ -68,7 +70,7 @@ class AvitoParser extends Parser {
 
   _extractRent(rentString) {
     const rentMatches = rentString.match(/(\d+\s*)+/);
-    if (rentMatches.length > 0) {
+    if (rentMatches && rentMatches.length > 0) {
       const normalizedRentString = rentMatches[0].replace(/[\s]/g, '');
       return parseFloat(normalizedRentString);
     }
@@ -80,7 +82,7 @@ class AvitoParser extends Parser {
     if (commissionString.indexOf(commission) > -1) {
       const regex = /(?:комиссия\s+)((\d+\s*)+)/g;
       const commissionMatches = regex.exec(commissionString);
-      if (commissionMatches.length > 1) {
+      if (commissionMatches && commissionMatches.length > 1) {
         const normalizedCommissionString = commissionMatches[1].replace(/[\s]/g, '');
         return parseFloat(normalizedCommissionString);
       }
@@ -93,7 +95,7 @@ class AvitoParser extends Parser {
     if (commissionString.indexOf(deposit) > -1) {
       const regex = /(?:залог\s+)((\d+\s*)+)/g;
       const depositMatches = regex.exec(commissionString);
-      if (depositMatches.length > 1) {
+      if (depositMatches && depositMatches.length > 1) {
         const normalizedDepositString = depositMatches[1].replace(/[\s]/g, '');
         return parseFloat(normalizedDepositString);
       }
@@ -167,25 +169,23 @@ class AvitoParser extends Parser {
     result.lat = $('.js-item-map').attr('data-map-lat');
     result.lng = $('.js-item-map').attr('data-map-lon');
 
-    $('.item-param-g-value').each((index, elem) => {
-      const items = $(elem).text().split(',');
-      for (let i = 0; i < items.length; i++) {
-        items[i] = items[i].trim();
+    const amenities = $('.item-param-g-value').map((index, elem) => {
+      return $(elem).text().split(',').map((item) => {
+        return item.trim();
+      });
+    }).get();
+
+    amenities.forEach((prop) => {
+      if (AvitoParser.permissionsMapping[prop]) {
+        result.permissions.push(AvitoParser.permissionsMapping[prop]);
       }
 
-      for (let i = 0; i < items.length; i++) {
-        const prop = items[i];
-        if (AvitoParser.permissionsMapping[prop]) {
-          result.permissions.push(AvitoParser.permissionsMapping[prop]);
-        }
+      if (AvitoParser.comfortsMapping[prop]) {
+        result.comforts.push(AvitoParser.comfortsMapping[prop]);
+      }
 
-        if (AvitoParser.comfortsMapping[prop]) {
-          result.comforts.push(AvitoParser.comfortsMapping[prop]);
-        }
-
-        if (AvitoParser.householdAppliancesMapping[prop]) {
-          result.householdAppliances.push(AvitoParser.householdAppliancesMapping[prop]);
-        }
+      if (AvitoParser.householdAppliancesMapping[prop]) {
+        result.householdAppliances.push(AvitoParser.householdAppliancesMapping[prop]);
       }
     });
 
@@ -197,13 +197,12 @@ class AvitoParser extends Parser {
       throw new Error('url param should be valid');
     }
 
-    const _this = this;
     return new Promise((resolve, reject) => {
-      request.get(url, function(err, response, body) {
+      request.get(url, (err, response, body) => {
         if (err) {
           reject(err);
         } else {
-          resolve(_this._parsePage(body, url));
+          resolve(this._parsePage(body, url));
         }
       });
     });
@@ -215,14 +214,14 @@ AvitoParser.permissionsMapping = {
   'Можно с детьми': 'family_with_children_allowed',
   'Можно курить': 'smoking_allowed',
   'Можно для мероприятий': 'use_as_event_space_allowed',
-}
+};
 
 AvitoParser.comfortsMapping = {
   'Балкон / лоджия': 'balcony',
   'Кондиционер': 'conditioner',
   'Парковочное место': 'parking_space',
   'Камин': 'fireplace',
-}
+};
 
 AvitoParser.householdAppliancesMapping = {
   'Wi-Fi': 'wifi',
@@ -234,6 +233,6 @@ AvitoParser.householdAppliancesMapping = {
   'Стиральная машина': 'washing_machine',
   'Фен': 'hairdryer',
   'Утюг': 'iron',
-}
+};
 
 export default AvitoParser;

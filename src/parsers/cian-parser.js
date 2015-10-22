@@ -82,8 +82,6 @@ class CianParser extends Parser {
         result.floor = values[0];
         result.floorsInBuilding = values[1];
       }
-
-
     });
 
     // get description
@@ -153,7 +151,7 @@ CianParser.permissionsMapping = {
   'можно с животными': 'pets_allowed',
   'можно с детьми': 'family_with_children_allowed',
   'можно курить': 'smoking_allowed',
-}
+};
 
 // TODO: check possible comforts on cian
 CianParser.comfortsMapping = {
@@ -161,7 +159,7 @@ CianParser.comfortsMapping = {
   'кондиционер': 'conditioner',
   'парковочное место': 'parking_space',
   'камин': 'fireplace',
-}
+};
 
 // TODO: check possible appliances on cian
 CianParser.householdAppliancesMapping = {
@@ -175,7 +173,7 @@ CianParser.householdAppliancesMapping = {
   'стиральная машина': 'washing_machine',
   'фен': 'hairdryer',
   'утюг': 'iron',
-}
+};
 
 
 export default CianParser;
