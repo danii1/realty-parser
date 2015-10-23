@@ -1,19 +1,29 @@
 {
   "name": "realty-parser",
   "version": "0.1.0",
-  "description": "Parsers for major russian real estate sites",
+  "description": "Parsers for various real estate websites",
   "main": "lib/realty-parser.js",
   "scripts": {
     "test": "gulp test",
     "prepublish": "gulp build"
   },
   "keywords": [
+    "real estate",
     "realty",
     "avito",
     "cian"
   ],
   "author": "Daniil Pokrovsky",
   "license": "ISC",
+  "homepage": "https://github.com/danii1/realty-parser",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/danii1/realty-parser"
+  },
+  "bugs": "https://github.com/danii1/realty-parser/issues",
+  "engines": {
+    "node": ">=0.12.0"
+  },
   "devDependencies": {
     "babel": "^5.8.23",
     "babel-core": "^5.8.25",
