@@ -13,7 +13,7 @@ class AvitoParser extends Parser {
       return 'room';
     } else if (header.indexOf(appartment)) {
       return 'appartment';
-    } else if (header.indexof(studio)) {
+    } else if (header.indexOf(studio)) {
       return 'studio';
     } else if (header.indexOf(house)) {
       return 'house';
@@ -38,7 +38,7 @@ class AvitoParser extends Parser {
   }
 
   _extractFloorFromHeader(header) {
-    const floorMatches = header.match(/\d\/\d(?=\s*эт)/);
+    const floorMatches = header.match(/\d+\/\d+(?=\s*эт)/);
     if (floorMatches && floorMatches.length > -1) {
       const floors = floorMatches[0].split('/');
       return parseInt(floors[0], 10);
@@ -47,7 +47,7 @@ class AvitoParser extends Parser {
   }
 
   _extractFloorsInBuildingFromHeader(header) {
-    const floorMatches = header.match(/\d\/\d(?=\s*эт)/);
+    const floorMatches = header.match(/\d+\/\d+(?=\s*эт)/);
     if (floorMatches && floorMatches.length > -1) {
       const floors = floorMatches[0].split('/');
       return parseInt(floors[1], 10);
@@ -154,6 +154,13 @@ class AvitoParser extends Parser {
 
     // get description
     result.description = $('#desc_text').text().trim();
+    if (!result.description) {
+      const elem = $('.description-content');
+      if ($(elem).attr('itemprop') === 'description') {
+        result.description = $(elem).text().trim();
+      }
+    }
+
 
     // get rent and rent type
     const rentString = $('.p_i_price').text().toLowerCase();

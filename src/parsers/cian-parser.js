@@ -13,7 +13,7 @@ class CianParser extends Parser {
       return 'room';
     } else if (header.indexOf(appartment)) {
       return 'appartment';
-    } else if (header.indexof(studio)) {
+    } else if (header.indexOf(studio)) {
       return 'studio';
     } else if (header.indexOf(house)) {
       return 'house';
@@ -199,7 +199,6 @@ CianParser.comfortsMapping = {
   'парковочное место': 'parking_space',
 };
 
-// TODO: check possible appliances on cian
 CianParser.householdAppliancesMapping = {
   'интернет': 'internet',
   'мебель на кухне': 'kitchen_furniture',
